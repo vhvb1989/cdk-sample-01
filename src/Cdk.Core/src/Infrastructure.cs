@@ -5,7 +5,7 @@ namespace Cdk.Core
 {
     public class Infrastructure
     {
-        internal static readonly int Seed = 123;
+        internal static readonly string Seed = Environment.GetEnvironmentVariable("AZURE_ENV_NAME") ?? throw new Exception("No environment variable found named 'AZURE_ENV_NAME'");
 
         public IList<Resource> Resources { get; }
 

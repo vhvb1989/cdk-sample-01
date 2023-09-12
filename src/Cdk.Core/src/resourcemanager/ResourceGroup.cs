@@ -11,11 +11,11 @@ namespace Cdk.ResourceManager
     {
         public override string Name { get; } = $"rg{Infrastructure.Seed}";
 
-        public ResourceGroup(Resource scope, string? name = default, string version = "2023-02-01", AzureLocation? location = default)
+        public ResourceGroup(Resource scope, string? name = default, string version = "2023-07-01", AzureLocation? location = default)
             : base(scope, version, ResourceManagerModelFactory.ResourceGroupData(
                 name: name is null ? $"rg-{Infrastructure.Seed}" : $"{name}-{Infrastructure.Seed}",
                 resourceType: "Microsoft.Resources/resourceGroups",
-                location: location ?? AzureLocation.WestUS))
+                location: location ?? Environment.GetEnvironmentVariable("AZURE_LOCATION") ?? AzureLocation.WestUS))
         {
         }
 

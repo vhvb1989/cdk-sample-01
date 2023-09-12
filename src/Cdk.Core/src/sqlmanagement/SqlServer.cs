@@ -12,7 +12,7 @@ namespace Cdk.Sql
         public SqlServer(Resource? scope, string name, string? version = default, AzureLocation? location = default)
             : base(scope, version ?? "2022-08-01-preview", ArmSqlModelFactory.SqlServerData(
                 name: name is null ? $"sql-{Infrastructure.Seed}" : $"{name}-{Infrastructure.Seed}",
-                location: location ?? AzureLocation.WestUS,
+                location: location ?? Environment.GetEnvironmentVariable("AZURE_LOCATION") ?? AzureLocation.WestUS,
                 resourceType: "Microsoft.Sql/servers",
                 version: "12.0",
                 minimalTlsVersion: "1.2",

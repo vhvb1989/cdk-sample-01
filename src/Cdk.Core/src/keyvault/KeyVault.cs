@@ -9,24 +9,25 @@ namespace Cdk.KeyVault
     {
         public override string Name { get; } = $"kv{Infrastructure.Seed}";
 
-        public KeyVault(Resource scope, string name, string version = "2023-02-01", AzureLocation? location = default, Guid? accessPrincipal = default)
+        public KeyVault(Resource scope, string name, string version = "2023-02-01", AzureLocation? location = default)
             : base(scope, version, ArmKeyVaultModelFactory.KeyVaultData(
                 name: name is null ? $"kv-{Infrastructure.Seed}" : $"{name}-{Infrastructure.Seed}",
                 resourceType: "Microsoft.KeyVault/vaults",
-                location: location ?? AzureLocation.WestUS,
+                location: location ?? Environment.GetEnvironmentVariable("AZURE_LOCATION") ?? AzureLocation.WestUS,
                 properties: ArmKeyVaultModelFactory.KeyVaultProperties(
-                sku: new KeyVaultSku(KeyVaultSkuFamily.A, KeyVaultSkuName.Standard),
-                accessPolicies: accessPrincipal.HasValue ? new List<KeyVaultAccessPolicy>()
-                {
-                    new KeyVaultAccessPolicy(Guid.Empty, accessPrincipal.Value.ToString(), new IdentityAccessPermissions()
+                    tenantId: Guid.Parse(Environment.GetEnvironmentVariable("AZURE_TENANT_ID")!),
+                    sku: new KeyVaultSku(KeyVaultSkuFamily.A, KeyVaultSkuName.Standard),
+                    accessPolicies: Environment.GetEnvironmentVariable("AZURE_PRINCIPAL_ID") is not null ? new List<KeyVaultAccessPolicy>()
                     {
-                        Secrets =
+                        new KeyVaultAccessPolicy(Guid.Parse(Environment.GetEnvironmentVariable("AZURE_TENANT_ID")!), Environment.GetEnvironmentVariable("AZURE_PRINCIPAL_ID"), new IdentityAccessPermissions()
                         {
-                            IdentityAccessSecretPermission.Get,
-                            IdentityAccessSecretPermission.List
-                        }
-                    })
-                } : default)))
+                            Secrets =
+                            {
+                                IdentityAccessSecretPermission.Get,
+                                IdentityAccessSecretPermission.List
+                            }
+                        })
+                    } : default)))
         {
         }
 

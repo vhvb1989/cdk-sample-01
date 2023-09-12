@@ -54,7 +54,7 @@ namespace Cdk.Core
 
         public void AddOutput(string name, string propertyName)
         {
-            string? reference = GetReference(Properties.GetType(), propertyName, Properties.Name.ToCamelCase());
+            string? reference = GetReference(Properties.GetType(), propertyName, Name.ToCamelCase());
             if (reference is null)
                 throw new ArgumentNullException(nameof(propertyName), $"{propertyName} was not found in the property tree for {Properties.GetType().Name}");
             Outputs.Add(new Output(name, reference));
@@ -94,7 +94,7 @@ namespace Cdk.Core
             using var stream = new MemoryStream();
             stream.Write(Encoding.UTF8.GetBytes($"module {Name} './resources/{Name}/{Name}.bicep' = {{{Environment.NewLine}"));
             stream.Write(Encoding.UTF8.GetBytes($"  name: '{Properties.Name}'{Environment.NewLine}"));
-            stream.Write(Encoding.UTF8.GetBytes($"  scope: rg{Environment.NewLine}"));
+            stream.Write(Encoding.UTF8.GetBytes($"  scope: {Scope!.Name}{Environment.NewLine}"));
             var parametersToWrite = GetParams(this);
             if (parametersToWrite.Count() > 0)
             {

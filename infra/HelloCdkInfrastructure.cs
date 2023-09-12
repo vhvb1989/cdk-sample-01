@@ -9,30 +9,21 @@ namespace Hello.Cdk
     public class HelloCdkInfrastructure : Infrastructure
     {
         public HelloCdkInfrastructure(AzureLocation? location = default)
-        {
-            location ??= AzureLocation.WestUS;
+        {            
+            ResourceGroup resourceGroup = new ResourceGroup(Resource.SubscriptionScope);
+            //Resources.Add(resourceGroup);
 
-            Parameter sqlAdminPasswordParam = new Parameter("sqlAdminPassword", "SQL Server administrator password", isSecure: true);
-            Parameters.Add(sqlAdminPasswordParam);
+            var keyVault = new KeyVault(resourceGroup, "kv");
+            // keyVault.AddOutput("endpoint", nameof(keyVault.Properties.Properties.VaultUri));
 
-            Parameter appUserPasswordParam = new Parameter("appUserPassword", "Application user password", isSecure: true);
-            Parameters.Add(appUserPasswordParam);
+            // KeyVaultSecret sqlAdminSecret = new KeyVaultSecret(keyVault, "sqlAdminPassword");
+            // sqlAdminSecret.AssignParameter(nameof(sqlAdminSecret.Properties.Properties.Value), sqlAdminPasswordParam);
 
-            ResourceGroup resourceGroup = new ResourceGroup(Resource.SubscriptionScope, location: location);
-            resourceGroup.Properties.Tags.Add("key", "value");
-            Resources.Add(resourceGroup);
+            // KeyVaultSecret appUserSecret = new KeyVaultSecret(keyVault, "appUserPassword");
+            // appUserSecret.AssignParameter(nameof(appUserSecret.Properties.Properties.Value), appUserPasswordParam);
 
-            KeyVault keyVault = new KeyVault(resourceGroup, "hello-adk-kevault", location: location, accessPrincipal: Guid.NewGuid());
-            keyVault.AddOutput("endpoint", nameof(keyVault.Properties.Properties.VaultUri));
-
-            KeyVaultSecret sqlAdminSecret = new KeyVaultSecret(keyVault, "sqlAdminPassword");
-            sqlAdminSecret.AssignParameter(nameof(sqlAdminSecret.Properties.Properties.Value), sqlAdminPasswordParam);
-
-            KeyVaultSecret appUserSecret = new KeyVaultSecret(keyVault, "appUserPassword");
-            appUserSecret.AssignParameter(nameof(appUserSecret.Properties.Properties.Value), appUserPasswordParam);
-
-            SqlServer sqlServer = new SqlServer(resourceGroup, "hello-adk-sqlserver", location: location);
-            sqlServer.AssignParameter(nameof(sqlServer.Properties.AdministratorLoginPassword), sqlAdminPasswordParam);
+            // SqlServer sqlServer = new SqlServer(resourceGroup, "hello-adk-sqlserver", location: location);
+            // sqlServer.AssignParameter(nameof(sqlServer.Properties.AdministratorLoginPassword), sqlAdminPasswordParam);
         }
     }
 }
