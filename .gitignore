@@ -1,0 +1,4 @@
+.azure
+infra/out/**
+infra/obj/**
+infra/bin/**
