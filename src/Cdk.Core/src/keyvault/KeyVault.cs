@@ -7,7 +7,7 @@ namespace Cdk.KeyVault
 {
     public class KeyVault : Resource<KeyVaultData>
     {
-        public override string Name { get; } = $"kv{Infrastructure.Seed}";
+        public override string Name { get; } = $"kv{Infrastructure.Seed.Replace("-","")}";
 
         public KeyVault(Resource scope, string name, string version = "2023-02-01", AzureLocation? location = default)
             : base(scope, version, ArmKeyVaultModelFactory.KeyVaultData(

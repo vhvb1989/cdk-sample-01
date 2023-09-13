@@ -11,10 +11,9 @@ namespace Hello.Cdk
         public HelloCdkInfrastructure(AzureLocation? location = default)
         {            
             ResourceGroup resourceGroup = new ResourceGroup(Resource.SubscriptionScope);
-            //Resources.Add(resourceGroup);
+            Resources.Add(resourceGroup);
 
             var keyVault = new KeyVault(resourceGroup, "kv");
-            // keyVault.AddOutput("endpoint", nameof(keyVault.Properties.Properties.VaultUri));
 
             // KeyVaultSecret sqlAdminSecret = new KeyVaultSecret(keyVault, "sqlAdminPassword");
             // sqlAdminSecret.AssignParameter(nameof(sqlAdminSecret.Properties.Properties.Value), sqlAdminPasswordParam);

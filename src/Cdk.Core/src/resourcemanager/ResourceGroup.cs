@@ -9,12 +9,13 @@ namespace Cdk.ResourceManager
 {
     public class ResourceGroup : Resource<ResourceGroupData>, IModelSerializable<ResourceGroup>
     {
-        public override string Name { get; } = $"rg{Infrastructure.Seed}";
+        public override string Name { get; } = $"rg{Infrastructure.Seed.Replace("-","")}";
 
         public ResourceGroup(Resource scope, string? name = default, string version = "2023-07-01", AzureLocation? location = default)
             : base(scope, version, ResourceManagerModelFactory.ResourceGroupData(
                 name: name is null ? $"rg-{Infrastructure.Seed}" : $"{name}-{Infrastructure.Seed}",
                 resourceType: "Microsoft.Resources/resourceGroups",
+                tags: new Dictionary<string,string> {{"azd-env-name",Environment.GetEnvironmentVariable("AZURE_ENV_NAME")}},
                 location: location ?? Environment.GetEnvironmentVariable("AZURE_LOCATION") ?? AzureLocation.WestUS))
         {
         }
